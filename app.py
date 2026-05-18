@@ -41,14 +41,16 @@ def index(): # главная страница
 
         # списки всех заметок и всех папок
         dir_list = [note['directory'] for note in notes_json['note'] if note['user_id'] == current_user.id]
+        type_list = [note['type'] for note in notes_json['note'] if note['user_id'] == current_user.id]
         dict_notes = dict()
         for dir in dir_list:
             dict_notes[dir] = [note for note in notes_json['note'] if note['user_id'] == current_user.id and
-                               note['directory'] == dir][::-1]
+                               note['directory'] == dir][::-1] # переворачиваю список, чтобы новые оказались в начале
 
         return render_template('note_list_template.html',
-                               dir_list=sorted(list(set(dir_list))),
-                               dict_notes=dict_notes)
+                               dir_list=sorted(list(set(dir_list))), # сортировка и избавление от повторов
+                               dict_notes=dict_notes,
+                               type_list=sorted(list(set(type_list + [''])))[1:]) # срез, чтобы убрать пустой вариант
     # просьба зайти если не зашел
     return render_template('notification_template.html',
                            content='Пожалуйста, зарегистрируйтесь или войдите',
